@@ -47,7 +47,7 @@ def relu_backward(dA, cache):
 
 
 def linear_forward(A, W, b):
-    Z = np.dot(A, W) + b
+    Z = np.dot(W, A) + b
     cache = (A, W, b)
     
     return Z, cache
@@ -72,13 +72,11 @@ def L_model_forward(X, parameters):
     for l in range(1, L):
         A_prev = A
         A, cache = linear_activation_forward(
-                A_prev, parameters["W" + str(l)], parameters(["b" +str(l)], 
-                                  activation = "relu"))
+                A_prev, parameters["W" + str(l)], parameters["b" +str(l)], "relu")
         caches.append(cache)
     
     AL, cache = linear_activation_forward(
-            A, parameters["W" + str(L)], parameters["b" +str[L]], 
-            activation = "sigmoid")
+            A, parameters["W" + str(L)], parameters["b" +str(L)], "sigmoid")
     caches.append(cache)
     
     return AL, caches
@@ -127,7 +125,7 @@ def L_model_backward(AL, Y, caches):
     for l in reversed(range(L-1)):
         current_cache = caches[l]
         dA_prev_temp, dW_temp, db_temp = linear_activation_backward(
-                grads["dA" +str(l + 2), current_cache, "relu"])
+                grads["dA" +str(l + 2)], current_cache, "relu")
         grads["dA" + str(l + 1)] = dA_prev_temp
         grads["dW" + str(l + 1)] = dW_temp
         grads["db" + str(l + 1)] = db_temp
@@ -157,6 +155,8 @@ def L_layer_model(X, Y, layers_dims, learning_rate=0.005, num_iterations=3000, p
         if print_cost and i % 100 == 0:
             costs.append(cost)
             
+    return cost,parameters, AL
+    
     plt.plot(np.squeeze(costs))
     plt.ylabel('cost')
     plt.xlabel('iterations (per tens)')

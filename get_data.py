@@ -7,6 +7,7 @@ Created on Tue Jun 12 16:33:13 2018
 
 from requests_html import HTMLSession
 import numpy as np
+import copy
 
 #从目标网站获取目标信息
 #url是网址， sel是selector选择相应的元素
@@ -44,8 +45,10 @@ def trans_to_list(result):
     return ball_result
 
 #将结果转化为1，0结构
-def result_to_data(ball_result):
+def result_to_data(url, sel):
     data_result = []
+    result = get_result(url, sel)
+    ball_result = trans_to_list(result)
     for i in range(len(ball_result)):
         each_time_result = []
         for l in range(49):
@@ -62,3 +65,13 @@ def result_to_data(ball_result):
                         
         data_result.append(each_time_result)
     return data_result
+
+def data_trans_to_array(result):
+    data_x = copy.copy(result)
+    data_x.remove(data_x[-1])
+    data_x = np.array(data_x)
+    data_y = copy.copy(result)
+    data_y.remove(data_y[0])    
+    data_y = np.array(data_y)
+
+    return data_x, data_y
